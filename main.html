@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Badminton Tournament Scoreboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+    .tournament {
+      width: 80%;
+      margin: 20px auto;
+      text-align: center;
+    }
+    .match {
+      border: 1px solid #ddd;
+      background-color: #fff;
+      padding: 10px;
+      margin: 10px;
+    }
+    .team {
+      display: flex;
+      justify-content: space-between;
+    }
+    .score {
+      font-weight: bold;
+      font-size: 1.5em;
+    }
+  </style>
+  
+  	// Import the functions you need from the SDKs you need
+	import { initializeApp } from "firebase/app";
+	import { getAnalytics } from "firebase/analytics";
+	// TODO: Add SDKs for Firebase products that you want to use
+	// https://firebase.google.com/docs/web/setup#available-libraries
+	
+	// Your web app's Firebase configuration
+	// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+	const firebaseConfig = {
+  	apiKey: "AIzaSyBkYTevsG25ziya32sbT1PO-HO_L3AJnc8",
+  	authDomain: "the-score-board.firebaseapp.com",
+  	projectId: "the-score-board",
+  	storageBucket: "the-score-board.appspot.com",
+  	messagingSenderId: "1047443323754",
+  	appId: "1:1047443323754:web:98a028f92eac4b05254313",
+  	measurementId: "G-Y7CG4DSV2B"
+	};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+</head>
+<body>
+  <div class="tournament">
+    <h1>Badminton Tournament Scoreboard</h1>
+
+    <!-- Match 1 -->
+    <div class="match">
+      <div class="team">
+        <span>Team Q (Looth & Neesham)</span>
+        <span class="score" id="scoreQ">0</span>
+      </div>
+      <div class="team">
+        <span>Team M (Adam & Hassan)</span>
+        <span class="score" id="scoreM">0</span>
+      </div>
+      <button onclick="updateScore('Q')">Update Team Q</button>
+      <button onclick="updateScore('M')">Update Team M</button>
+    </div>
+  </div>
+
+  <script>
+    const scoresRef = database.ref('scores');
+
+    function updateScore(team) {
+      const scoreElement = document.getElementById(`score${team}`);
+      let currentScore = parseInt(scoreElement.textContent);
+      currentScore += 1;
+      scoreElement.textContent = currentScore;
+
+      // Update in Firebase
+      scoresRef.child(team).set(currentScore);
+    }
+
+    scoresRef.on('value', (snapshot) => {
+      const scores = snapshot.val();
+      if (scores) {
+        document.getElementById('scoreQ').textContent = scores.Q || 0;
+        document.getElementById('scoreM').textContent = scores.M || 0;
+      }
+    });
+  </script>
+</body>
+</html>
